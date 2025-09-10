@@ -29,7 +29,7 @@ double Mediana(vector <int> vekt) {
     double med;
     sort(vekt.begin(), vekt.end());
     if (n % 2 == 0) {
-        med = (vekt[n/2] + vekt[n/2 - 1]) / 2;
+        med = double(vekt[n/2] + vekt[n/2 - 1]) / 2.0;
     } else {
         med = vekt[n/2];
     }
@@ -54,27 +54,33 @@ Studentas Stud_ivestis(int sk){
 }
 
 int main() {
-    /*int m;
+    int m;
+    char testi;
     vector <Studentas> Grupe;
     cout << "Kiek studentu grupeje? "; cin >> m;
     for (auto i = 0; i < m; i++) {
         Grupe.push_back(Stud_ivestis(i));
     }
-    cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
-    cout << string(41,'-') << endl;
-    for (auto Past : Grupe) {
-        cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
-    }*/
-   vector <int> vekt;
-   for (int i = 24;i>0; i-=3) {
-       i += i%2;
-       vekt.push_back(i);
-   }
-   for (auto i = 0;i < vekt.size(); i++) {
-       cout << vekt[i] << " ";
-   }
-   cout << endl;
-   sort(vekt.begin(), vekt.end());
-   double mediana = Mediana(vekt);
-   cout << mediana;
+    cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> testi;
+    if (testi == 'V') {
+        cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
+        cout << string(41,'-') << endl;
+        for (auto Past : Grupe) {
+            cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
+        }
+    } else if (testi == 'M') {
+        cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
+        cout << string(41,'-') << endl;
+        for (auto Past : Grupe) {
+            cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        }
+    } else {
+        cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(19) << left << "Galutinis (Vid.) / " << setw(16) << left << "Galutinis (Med.)" << endl;
+        cout << string(60,'-') << endl;
+        for (auto Past : Grupe) {
+            cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(19) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        }
+    }
+    
+   
 }
