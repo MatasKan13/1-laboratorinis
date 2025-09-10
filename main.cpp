@@ -2,7 +2,8 @@
 #include <iomanip>
 #include <vector>
 #include <string>
-#include <algorithm>
+#include <algorithm> // Skirta sort metodui
+#include <cctype> // Skirta toupper ir tolower metodams
 
 using std::cout;
 using std::cin;
@@ -14,6 +15,8 @@ using std::left;
 using std::fixed;
 using std::setprecision;
 using std::sort;
+using std::toupper;
+using std::tolower;
 
 struct Studentas {
     string vardas;
@@ -36,16 +39,43 @@ double Mediana(vector <int> vekt) {
     return(med);
 }
 
+char Iv_raidziu_patikra(char ivestis, string raides) {
+    bool tesiam = true;
+    while (tesiam) {
+        ivestis = tolower(ivestis);
+        for (auto raide : raides) {
+            if (ivestis == raide) {
+                tesiam = false;
+                break;
+            }
+        }
+        if (tesiam) {
+            cout << "Neteisinga ivestis! Bandykite dar karta: "; cin >> ivestis;
+        }
+    }
+    return(ivestis);
+}
+
 Studentas Stud_ivestis(int sk){
     Studentas stud;
-    int n, laik_paz, suma =0;
+    int laik_paz, suma =0, n=1;
+    bool pabaiga = false;
+    char testi;
     cout << "Kuo vardu " << sk+1 << "-asis studentas(-e)? "; cin >> stud.vardas;
     cout << "Kokia jo (jos) pavarde? "; cin >> stud.pavarde;
-    cout << "Kiek pazymiu ivesite? "; cin >> n;
-    for (auto i = 0; i<n; i++) {
-        cout << i+1 << "-asis pazymys: "; cin >> laik_paz;
+    cout << "Iveskite pazymius." << endl;
+    while (!pabaiga) {
+        cout << n << "-asis pazymys: "; cin >> laik_paz;
         stud.paz.push_back(laik_paz);
         suma+=laik_paz;
+        cout << "Ar norite toliau rasyti pazymius? [T/N] "; cin >> testi;
+        testi = Iv_raidziu_patikra(testi, "tn");
+        if (testi == 't') {
+            n++;
+        }
+        else if (testi == 'n'){
+            break;
+        }
     }
     cout << "Koks egzamino ivertinimas? "; cin >> stud.egz;
     stud.galVid = 0.4 * double(suma)/double(n) + 0.6 * stud.egz;
@@ -62,19 +92,20 @@ int main() {
         Grupe.push_back(Stud_ivestis(i));
     }
     cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> testi;
-    if (testi == 'V') {
+    testi = Iv_raidziu_patikra(testi, "vma");
+    if (testi == 'v') {
         cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
         cout << string(41,'-') << endl;
         for (auto Past : Grupe) {
             cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
         }
-    } else if (testi == 'M') {
+    } else if (testi == 'm') {
         cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
         cout << string(41,'-') << endl;
         for (auto Past : Grupe) {
             cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
-    } else {
+    } else if (testi == 'a') {
         cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(19) << left << "Galutinis (Vid.) / " << setw(16) << left << "Galutinis (Med.)" << endl;
         cout << string(60,'-') << endl;
         for (auto Past : Grupe) {
