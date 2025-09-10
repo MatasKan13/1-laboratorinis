@@ -39,12 +39,28 @@ double Mediana(vector <int> vekt) {
     return(med);
 }
 
-char Iv_raidziu_patikra(char ivestis, string raides) {
+char Iv_raid_patikra(char ivestis, string raides) {
     bool tesiam = true;
     while (tesiam) {
         ivestis = tolower(ivestis);
         for (auto raide : raides) {
             if (ivestis == raide) {
+                tesiam = false;
+                break;
+            }
+        }
+        if (tesiam) {
+            cout << "Neteisinga ivestis! Bandykite dar karta: "; cin >> ivestis;
+        }
+    }
+    return(ivestis);
+}
+
+char Iv_paz_patikra(int ivestis) {
+    bool tesiam = true;
+    while (tesiam) {
+        for (int sk = 1; sk <=10; sk++) {
+            if (ivestis == sk) {
                 tesiam = false;
                 break;
             }
@@ -66,10 +82,11 @@ Studentas Stud_ivestis(int sk){
     cout << "Iveskite pazymius." << endl;
     while (!pabaiga) {
         cout << n << "-asis pazymys: "; cin >> laik_paz;
+        laik_paz = Iv_paz_patikra(laik_paz);
         stud.paz.push_back(laik_paz);
         suma+=laik_paz;
         cout << "Ar norite toliau rasyti pazymius? [T/N] "; cin >> testi;
-        testi = Iv_raidziu_patikra(testi, "tn");
+        testi = Iv_raid_patikra(testi, "tn");
         if (testi == 't') {
             n++;
         }
@@ -92,7 +109,7 @@ int main() {
         Grupe.push_back(Stud_ivestis(i));
     }
     cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> testi;
-    testi = Iv_raidziu_patikra(testi, "vma");
+    testi = Iv_raid_patikra(testi, "vma");
     if (testi == 'v') {
         cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
         cout << string(41,'-') << endl;
@@ -112,6 +129,4 @@ int main() {
             cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(19) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
     }
-    
-   
 }
