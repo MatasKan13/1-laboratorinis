@@ -5,6 +5,7 @@
 #include <algorithm> // Skirta sort metodui
 #include <cctype> // Skirta toupper ir tolower metodams
 #include <random> // Skirta atsitiktinių skaičių generavimui
+#include <fstream> // Skirtas darbui su failais
 
 using std::cout;
 using std::cin;
@@ -21,6 +22,9 @@ using std::tolower;
 using std::random_device;
 using std::mt19937;
 using std::uniform_int_distribution;
+using std::ifstream;
+using std::getline;
+using std::ws;
 
 struct Studentas {
     string vardas;
@@ -134,32 +138,58 @@ Studentas Stud_ivestis(int sk){
 
 int main() {
     int m;
-    char testi;
+    char rodinys, ar_f;
     vector <Studentas> Grupe;
-    cout << "Kiek studentu grupeje? "; cin >> m;
-    for (auto i = 0; i < m; i++) {
-        Grupe.push_back(Stud_ivestis(i));
+    string failo_pav;
+    cout << "Sveiki!" << endl << "Pasirinkite, ar norite studentu duomenis irasyti patys [P], ar ikelti faila [F]? "; cin >> ar_f;
+    ar_f = Iv_raid_patikra(ar_f, "pf");
+    if (ar_f == 'p') {
+        cout << "Kiek studentu grupeje? "; cin >> m;
+        for (auto i = 0; i < m; i++) {
+            Grupe.push_back(Stud_ivestis(i));
+        }
     }
-    cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> testi;
-    testi = Iv_raid_patikra(testi, "vma");
-    if (testi == 'v') {
+    if (ar_f == 'f') {
+        cout << "Puiku! Nuskaitomas failas..." << endl;
+        ifstream in("kursiokai.txt");
+        string eil;
+        getline(in, eil);
+        int paz;
+        for (int i = 1; i<=30; i++){
+            Studentas stud;
+            int suma = 0;
+            in >> ws >> stud.vardas >> ws >> stud.pavarde >> ws;
+            for (int j = 0; j < 5; j++)
+            {                
+                in >> paz >> ws;
+                stud.paz.push_back(paz);
+                suma += paz;
+            }
+            in >> stud.egz >> ws;
+            stud.galVid = 0.4 * double(suma)/double(5) + 0.6 * stud.egz;
+            stud.galMed = 0.4 * Mediana(stud.paz) + 0.6 * stud.egz;
+            Grupe.push_back(stud);
+        }
+    }
+    cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> rodinys;
+    rodinys = Iv_raid_patikra(rodinys, "vma");
+    if (rodinys == 'v') {
         cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
         cout << string(41,'-') << endl;
         for (auto Past : Grupe) {
             cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
         }
-    } else if (testi == 'm') {
+    } else if (rodinys == 'm') {
         cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
         cout << string(41,'-') << endl;
         for (auto Past : Grupe) {
             cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
-    } else if (testi == 'a') {
+    } else if (rodinys == 'a') {
         cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
         cout << string(58,'-') << endl;
         for (auto Past : Grupe) {
             cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
     }
-    
 }
