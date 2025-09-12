@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm> // Skirta sort metodui
 #include <cctype> // Skirta toupper ir tolower metodams
+#include <random> // Skirta atsitiktinių skaičių generavimui
 
 using std::cout;
 using std::cin;
@@ -17,6 +18,9 @@ using std::setprecision;
 using std::sort;
 using std::toupper;
 using std::tolower;
+using std::random_device;
+using std::mt19937;
+using std::uniform_int_distribution;
 
 struct Studentas {
     string vardas;
@@ -76,25 +80,53 @@ Studentas Stud_ivestis(int sk){
     Studentas stud;
     int laik_paz, suma =0, n=1;
     bool pabaiga = false;
-    char testi;
+    char testi, atsit;
     cout << "Kuo vardu " << sk+1 << "-asis studentas(-e)? "; cin >> stud.vardas;
     cout << "Kokia jo (jos) pavarde? "; cin >> stud.pavarde;
-    cout << "Iveskite pazymius." << endl;
-    while (!pabaiga) {
-        cout << n << "-asis pazymys: "; cin >> laik_paz;
-        laik_paz = Iv_paz_patikra(laik_paz);
-        stud.paz.push_back(laik_paz);
-        suma+=laik_paz;
-        cout << "Ar norite toliau rasyti pazymius? [T/N] "; cin >> testi;
-        testi = Iv_raid_patikra(testi, "tn");
-        if (testi == 't') {
-            n++;
+    cout << "Ar noretumete sio studento pazymius sugeneruoti atsitiktinai? [t/n] "; cin >> atsit;
+    atsit = Iv_raid_patikra(atsit, "tn");
+    if (atsit == 't') {
+        random_device rd;
+        mt19937 gen(rd());
+        uniform_int_distribution dist(1,10);
+        while (!pabaiga) {
+            cout << "Generuojama..." << endl;
+            int p = dist(gen);
+            cout << "Sugeneruotas pazymys: " << p << endl;
+            stud.paz.push_back(p);
+            suma+=p;
+            cout << "Ar norite toliau rasyti pazymius? [T/N] "; cin >> testi;
+            testi = Iv_raid_patikra(testi, "tn");
+            if (testi == 't') {
+                n++;
+            }
+            else if (testi == 'n'){
+                break;
+            }
         }
-        else if (testi == 'n'){
-            break;
-        }
+        cout << "Generuojama..." << endl;
+        stud.egz = dist(gen);
+        cout << "Sugeneruotas egzamino ivertinimas: " << stud.egz << endl;
     }
-    cout << "Koks egzamino ivertinimas? "; cin >> stud.egz;
+    else {
+        cout << "Iveskite pazymius." << endl;
+        while (!pabaiga) {
+            cout << n << "-asis pazymys: "; cin >> laik_paz;
+            laik_paz = Iv_paz_patikra(laik_paz);
+            stud.paz.push_back(laik_paz);
+            suma+=laik_paz;
+            cout << "Ar norite toliau rasyti pazymius? [T/N] "; cin >> testi;
+            testi = Iv_raid_patikra(testi, "tn");
+            if (testi == 't') {
+                n++;
+            }
+            else if (testi == 'n'){
+                break;
+            }
+        }
+        cout << "Koks egzamino ivertinimas? "; cin >> stud.egz;
+        stud.egz = Iv_paz_patikra(stud.egz);
+    }
     stud.galVid = 0.4 * double(suma)/double(n) + 0.6 * stud.egz;
     stud.galMed = 0.4 * Mediana(stud.paz) + 0.6 * stud.egz;
     return(stud);
@@ -123,10 +155,11 @@ int main() {
             cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
     } else if (testi == 'a') {
-        cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(19) << left << "Galutinis (Vid.) / " << setw(16) << left << "Galutinis (Med.)" << endl;
-        cout << string(60,'-') << endl;
+        cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
+        cout << string(58,'-') << endl;
         for (auto Past : Grupe) {
-            cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(19) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+            cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
     }
+    
 }
