@@ -5,7 +5,8 @@
 #include <algorithm> // Skirta sort metodui
 #include <cctype> // Skirta toupper ir tolower metodams
 #include <random> // Skirta atsitiktinių skaičių generavimui
-#include <fstream> // Skirtas darbui su failais
+#include <fstream> // Skirta darbui su failais
+#include <sstream> // Skirta stringstream (eilutės pavertimo srautu) metodui
 
 using std::cout;
 using std::cin;
@@ -25,6 +26,7 @@ using std::uniform_int_distribution;
 using std::ifstream;
 using std::getline;
 using std::ws;
+using std::stringstream;
 
 struct Studentas {
     string vardas;
@@ -137,21 +139,28 @@ Studentas Stud_ivestis(int sk){
 }
 
 void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav) {
+    cout << "Puiku! Nuskaitomas failas..." << endl;
     ifstream in(failo_pav);
-    string eil;
-    getline(in, eil);
-    int paz;
-    for (int i = 1; i<=30; i++){
+    string stulp;
+    getline(in, stulp);
+    while (!in.eof()) {
         Studentas stud;
-        int suma = 0;
-        in >> ws >> stud.vardas >> ws >> stud.pavarde >> ws;
-        for (int j = 0; j < 5; j++) {             
-            in >> paz >> ws;
-            stud.paz.push_back(paz);
-            suma += paz;
+        string eil;
+        int pazymys, suma = 0, n = 0;
+        vector <int> pazymiai;
+        getline(in, eil);
+        stringstream srautas(eil);
+        srautas >> stud.vardas >> stud.pavarde;
+        while(srautas >> pazymys) {
+            stud.paz.push_back(pazymys);
+            n++;
+            suma += pazymys;
         }
-        in >> stud.egz >> ws;
-        stud.galVid = 0.4 * double(suma)/double(5) + 0.6 * stud.egz;
+        stud.egz = stud.paz.back();
+        suma -= stud.egz;
+        n--;
+        stud.paz.pop_back();
+        stud.galVid = 0.4 * double(suma)/double(n) + 0.6 * stud.egz;
         stud.galMed = 0.4 * Mediana(stud.paz) + 0.6 * stud.egz;
         Grupe.push_back(stud);
     }
@@ -172,7 +181,6 @@ int main() {
     }
     if (ar_f == 'f') {
         cout << "Iveskite failo pavadinima: "; cin >> failo_pav;
-        cout << "Puiku! Nuskaitomas failas..." << endl;
         Failo_nuskaitymas(Grupe, failo_pav);
     }
     cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> rodinys;
