@@ -49,6 +49,16 @@ double Mediana(vector <int> vekt) {
     return(med);
 }
 
+Studentas Balo_skaiciavimas(Studentas stud) {
+    int suma = 0, n = stud.paz.size();
+    for (int p : stud.paz) {
+        suma+=p;
+    }
+    stud.galVid = 0.4 * double(suma)/double(n) + 0.6 * stud.egz;
+    stud.galMed = 0.4 * Mediana(stud.paz) + 0.6 * stud.egz;
+    return stud;
+}
+
 char Iv_raid_patikra(char ivestis, string raides) {
     bool tesiam = true;
     while (tesiam) {
@@ -84,12 +94,12 @@ char Iv_paz_patikra(int ivestis) {
 
 Studentas Stud_ivestis(int sk){
     Studentas stud;
-    int laik_paz, suma =0, n=1;
+    int laik_paz, n = 1;
     bool pabaiga = false;
     char testi, atsit;
     cout << "Kuo vardu " << sk+1 << "-asis studentas(-e)? "; cin >> stud.vardas;
     cout << "Kokia jo (jos) pavarde? "; cin >> stud.pavarde;
-    cout << "Ar noretumete sio studento pazymius sugeneruoti atsitiktinai? [t/n] "; cin >> atsit;
+    cout << "Ar noretumete sio studento pazymius sugeneruoti atsitiktinai? [T/N] "; cin >> atsit;
     atsit = Iv_raid_patikra(atsit, "tn");
     if (atsit == 't') {
         random_device rd;
@@ -100,13 +110,9 @@ Studentas Stud_ivestis(int sk){
             int p = dist(gen);
             cout << "Sugeneruotas pazymys: " << p << endl;
             stud.paz.push_back(p);
-            suma+=p;
             cout << "Ar norite toliau rasyti pazymius? [T/N] "; cin >> testi;
             testi = Iv_raid_patikra(testi, "tn");
-            if (testi == 't') {
-                n++;
-            }
-            else if (testi == 'n'){
+            if (testi == 'n'){
                 break;
             }
         }
@@ -120,7 +126,6 @@ Studentas Stud_ivestis(int sk){
             cout << n << "-asis pazymys: "; cin >> laik_paz;
             laik_paz = Iv_paz_patikra(laik_paz);
             stud.paz.push_back(laik_paz);
-            suma+=laik_paz;
             cout << "Ar norite toliau rasyti pazymius? [T/N] "; cin >> testi;
             testi = Iv_raid_patikra(testi, "tn");
             if (testi == 't') {
@@ -133,12 +138,26 @@ Studentas Stud_ivestis(int sk){
         cout << "Koks egzamino ivertinimas? "; cin >> stud.egz;
         stud.egz = Iv_paz_patikra(stud.egz);
     }
-    stud.galVid = 0.4 * double(suma)/double(n) + 0.6 * stud.egz;
-    stud.galMed = 0.4 * Mediana(stud.paz) + 0.6 * stud.egz;
+    stud = Balo_skaiciavimas(stud);
     return(stud);
 }
 
+string Failo_patikra(string failo_pav) {
+    while (true) {
+        ifstream in(failo_pav);
+        if(in.fail()) {
+            cout << "Failo pavadinimas neteisingas! Bandykite dar karta: "; cin >> failo_pav;
+        }
+        else {
+            in.close();
+            break;
+        }
+    }
+    return failo_pav;
+}
+
 void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav) {
+    failo_pav = Failo_patikra(failo_pav);
     cout << "Puiku! Nuskaitomas failas..." << endl;
     ifstream in(failo_pav);
     string stulp;
@@ -146,24 +165,20 @@ void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav) {
     while (!in.eof()) {
         Studentas stud;
         string eil;
-        int pazymys, suma = 0, n = 0;
+        int pazymys;
         vector <int> pazymiai;
         getline(in, eil);
         stringstream srautas(eil);
         srautas >> stud.vardas >> stud.pavarde;
         while(srautas >> pazymys) {
             stud.paz.push_back(pazymys);
-            n++;
-            suma += pazymys;
         }
         stud.egz = stud.paz.back();
-        suma -= stud.egz;
-        n--;
         stud.paz.pop_back();
-        stud.galVid = 0.4 * double(suma)/double(n) + 0.6 * stud.egz;
-        stud.galMed = 0.4 * Mediana(stud.paz) + 0.6 * stud.egz;
+        stud = Balo_skaiciavimas(stud);
         Grupe.push_back(stud);
     }
+    in.close();
 }
 
 int main() {
