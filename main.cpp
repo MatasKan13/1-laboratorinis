@@ -181,6 +181,16 @@ void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav) {
     in.close();
 }
 
+bool Rikiavimas(Studentas a, Studentas b) {
+    if (a.pavarde < b.pavarde) {
+        return true;
+    }
+    else if (a.vardas < b.vardas) {
+        return true;
+    }
+    else return false;
+}
+
 int main() {
     int m;
     char rodinys, ar_f;
@@ -198,6 +208,7 @@ int main() {
         cout << "Iveskite failo pavadinima: "; cin >> failo_pav;
         Failo_nuskaitymas(Grupe, failo_pav);
     }
+    sort(Grupe.begin(), Grupe.end(), Rikiavimas);
     cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> rodinys;
     rodinys = Iv_raid_patikra(rodinys, "vma");
     if (rodinys == 'v') {
