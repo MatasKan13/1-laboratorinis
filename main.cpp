@@ -136,6 +136,27 @@ Studentas Stud_ivestis(int sk){
     return(stud);
 }
 
+void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav) {
+    ifstream in(failo_pav);
+    string eil;
+    getline(in, eil);
+    int paz;
+    for (int i = 1; i<=30; i++){
+        Studentas stud;
+        int suma = 0;
+        in >> ws >> stud.vardas >> ws >> stud.pavarde >> ws;
+        for (int j = 0; j < 5; j++) {             
+            in >> paz >> ws;
+            stud.paz.push_back(paz);
+            suma += paz;
+        }
+        in >> stud.egz >> ws;
+        stud.galVid = 0.4 * double(suma)/double(5) + 0.6 * stud.egz;
+        stud.galMed = 0.4 * Mediana(stud.paz) + 0.6 * stud.egz;
+        Grupe.push_back(stud);
+    }
+}
+
 int main() {
     int m;
     char rodinys, ar_f;
@@ -150,46 +171,29 @@ int main() {
         }
     }
     if (ar_f == 'f') {
+        cout << "Iveskite failo pavadinima: "; cin >> failo_pav;
         cout << "Puiku! Nuskaitomas failas..." << endl;
-        ifstream in("kursiokai.txt");
-        string eil;
-        getline(in, eil);
-        int paz;
-        for (int i = 1; i<=30; i++){
-            Studentas stud;
-            int suma = 0;
-            in >> ws >> stud.vardas >> ws >> stud.pavarde >> ws;
-            for (int j = 0; j < 5; j++)
-            {                
-                in >> paz >> ws;
-                stud.paz.push_back(paz);
-                suma += paz;
-            }
-            in >> stud.egz >> ws;
-            stud.galVid = 0.4 * double(suma)/double(5) + 0.6 * stud.egz;
-            stud.galMed = 0.4 * Mediana(stud.paz) + 0.6 * stud.egz;
-            Grupe.push_back(stud);
-        }
+        Failo_nuskaitymas(Grupe, failo_pav);
     }
     cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> rodinys;
     rodinys = Iv_raid_patikra(rodinys, "vma");
     if (rodinys == 'v') {
-        cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
-        cout << string(41,'-') << endl;
+        cout << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
+        cout << string(51,'-') << endl;
         for (auto Past : Grupe) {
-            cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
+            cout << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
         }
     } else if (rodinys == 'm') {
-        cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
-        cout << string(41,'-') << endl;
+        cout << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
+        cout << string(51,'-') << endl;
         for (auto Past : Grupe) {
-            cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+            cout << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
     } else if (rodinys == 'a') {
-        cout << setw(10) << left << "Vardas" << setw(15) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
-        cout << string(58,'-') << endl;
+        cout << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
+        cout << string(68,'-') << endl;
         for (auto Past : Grupe) {
-            cout << setw(10) << left << Past.vardas << setw(15) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+            cout << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
     }
 }
