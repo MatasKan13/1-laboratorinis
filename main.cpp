@@ -24,9 +24,11 @@ using std::random_device;
 using std::mt19937;
 using std::uniform_int_distribution;
 using std::ifstream;
+using std::ofstream;
 using std::getline;
 using std::ws;
 using std::stringstream;
+using std::istringstream;
 
 struct Studentas {
     string vardas;
@@ -159,16 +161,19 @@ string Failo_patikra(string failo_pav) {
 void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav) {
     failo_pav = Failo_patikra(failo_pav);
     cout << "Puiku! Nuskaitomas failas..." << endl;
+    stringstream buferis;
     ifstream in(failo_pav);
+    buferis << in.rdbuf();
+    in.close();
     string stulp;
-    getline(in, stulp);
-    while (!in.eof()) {
+    getline(buferis, stulp);
+    while (!buferis.eof()) {
         Studentas stud;
         string eil;
         int pazymys;
         vector <int> pazymiai;
-        getline(in, eil);
-        stringstream srautas(eil);
+        getline(buferis, eil);
+        istringstream srautas(eil);
         srautas >> stud.vardas >> stud.pavarde;
         while(srautas >> pazymys) {
             stud.paz.push_back(pazymys);
@@ -178,7 +183,6 @@ void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav) {
         stud = Balo_skaiciavimas(stud);
         Grupe.push_back(stud);
     }
-    in.close();
 }
 
 bool Rikiavimas(Studentas a, Studentas b) {
@@ -191,11 +195,41 @@ bool Rikiavimas(Studentas a, Studentas b) {
     else return false;
 }
 
+void Spausdinimas(vector <Studentas> Grupe, string failo_pav) {
+    char rodinys;
+    cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> rodinys;
+    rodinys = Iv_raid_patikra(rodinys, "vma");
+    failo_pav = failo_pav + ".txt";
+    stringstream ss;
+    if (rodinys == 'v') {
+        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
+        ss << string(51,'-') << endl;
+        for (auto Past : Grupe) {
+            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
+        }
+    } else if (rodinys == 'm') {
+        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
+        ss << string(51,'-') << endl;
+        for (auto Past : Grupe) {
+            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        }
+    } else if (rodinys == 'a') {
+        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
+        ss << string(68,'-') << endl;
+        for (auto Past : Grupe) {
+            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        }
+    }
+    ofstream out(failo_pav);
+    out << ss.str();
+    out.close();
+}
+
 int main() {
     int m;
-    char rodinys, ar_f;
+    char ar_f;
     vector <Studentas> Grupe;
-    string failo_pav;
+    string ivesties_pav, isvesties_pav;
     cout << "Sveiki!" << endl << "Pasirinkite, ar norite studentu duomenis irasyti patys [P], ar ikelti faila [F]? "; cin >> ar_f;
     ar_f = Iv_raid_patikra(ar_f, "pf");
     if (ar_f == 'p') {
@@ -205,29 +239,10 @@ int main() {
         }
     }
     if (ar_f == 'f') {
-        cout << "Iveskite failo pavadinima: "; cin >> failo_pav;
-        Failo_nuskaitymas(Grupe, failo_pav);
+        cout << "Iveskite failo pavadinima: "; cin >> ivesties_pav;
+        Failo_nuskaitymas(Grupe, ivesties_pav);
     }
     sort(Grupe.begin(), Grupe.end(), Rikiavimas);
-    cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> rodinys;
-    rodinys = Iv_raid_patikra(rodinys, "vma");
-    if (rodinys == 'v') {
-        cout << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
-        cout << string(51,'-') << endl;
-        for (auto Past : Grupe) {
-            cout << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
-        }
-    } else if (rodinys == 'm') {
-        cout << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
-        cout << string(51,'-') << endl;
-        for (auto Past : Grupe) {
-            cout << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
-        }
-    } else if (rodinys == 'a') {
-        cout << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
-        cout << string(68,'-') << endl;
-        for (auto Past : Grupe) {
-            cout << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
-        }
-    }
+    cout << "Iveskite failo, i kuri norite isvesti rezultatus, pavadinima (be .txt): "; cin >> isvesties_pav;
+    Spausdinimas(Grupe, isvesties_pav);
 }
