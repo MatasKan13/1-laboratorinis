@@ -1,0 +1,21 @@
+#include <iostream>
+#include <fstream>
+#include <random>
+#include <iomanip>
+#include <sstream>
+#include <string>
+#include <typeinfo>
+#include <chrono>
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::setw;
+using std::left;
+using std::to_string;
+using std::random_device;
+using std::mt19937;
+using std::uniform_int_distribution;
+using std::ostringstream;
+using std::ofstream;
+using std::string;
