@@ -156,14 +156,19 @@ void Failo_nuskaitymas(vector <Studentas> &Vargsai, vector <Studentas> &Moksliuk
     }
 }
 
-bool Rikiavimas(Studentas a, Studentas b) {
-    if (a.pavarde < b.pavarde) {
-        return true;
-    }
-    else if (a.vardas < b.vardas) {
-        return true;
-    }
-    else return false;
+vector <Studentas> Rikiavimas(vector <Studentas> Rikiuojamas, char rik) {
+    sort(Rikiuojamas.begin(), Rikiuojamas.end(), [rik](const Studentas &a, const Studentas &b) {
+        if (rik == 'a') {
+            return a.pavarde < b.pavarde;
+        } else if (rik == 'b') {
+            return a.vardas < b.vardas;
+        } else if (rik == 'c') {
+            return a.galVid > b.galVid;
+        } else {
+            return a.galMed > b.galMed;
+        }
+    });
+    return Rikiuojamas;
 }
 
 void Spausdinimas(vector <Studentas> Moksliukai, vector <Studentas> Vargsai) {//, string failo_pav) {
