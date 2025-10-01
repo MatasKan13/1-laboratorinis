@@ -71,7 +71,7 @@ char Iv_raid_patikra(char ivestis, string raides) {
     bool tesiam = true;
     while (tesiam) {
         ivestis = tolower(ivestis);
-        for (auto raide : raides) {
+        for (auto &raide : raides) {
             if (ivestis == raide) {
                 tesiam = false;
                 break;
@@ -206,55 +206,53 @@ bool Rikiavimas(Studentas a, Studentas b) {
     else return false;
 }
 
-void Spausdinimas(vector <Studentas> Moksliukai, vector <Studentas> Vargsai, string failo_pav) {
+void Spausdinimas(vector <Studentas> Moksliukai, vector <Studentas> Vargsai) {//, string failo_pav) {
     char rodinys;
     cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> rodinys;
     rodinys = Iv_raid_patikra(rodinys, "vma");
-    failo_pav = failo_pav + ".txt";
-    stringstream ss;
+    //failo_pav = failo_pav + ".txt";
+    stringstream ss1;
+    stringstream ss2;
     if (rodinys == 'v') {
-        ss << "Protingieji:" << endl;
-        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
-        ss << string(51,'-') << endl;
-        for (auto Past : Moksliukai) {
-            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
+        ss1 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
+        ss1 << string(51,'-') << endl;
+        for (const auto &Past : Moksliukai) {
+            ss1 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
         }
-        ss << "Kvailiukai:" << endl;
-        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
-        ss << string(51,'-') << endl;
-        for (auto Past : Vargsai) {
-            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
+        ss2 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
+        ss2 << string(51,'-') << endl;
+        for (const auto &Past : Vargsai) {
+            ss2 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
         }
     } else if (rodinys == 'm') {
-        ss << "Protingieji (islaikymas apskaiciuotas pagal vidurki):" << endl;
-        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
-        ss << string(51,'-') << endl;
-        for (auto Past : Moksliukai) {
-            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        ss1 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
+        ss1 << string(51,'-') << endl;
+        for (const auto &Past : Moksliukai) {
+            ss1 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
-        ss << "Kvailiukai:" << endl;
-        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
-        ss << string(51,'-') << endl;
-        for (auto Past : Vargsai) {
-            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        ss2 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
+        ss2 << string(51,'-') << endl;
+        for (const auto &Past : Vargsai) {
+            ss2 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
     } else if (rodinys == 'a') {
-        ss << "Protingieji (islaikymas apskaiciuotas pagal vidurki):" << endl;
-        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
-        ss << string(68,'-') << endl;
-        for (auto Past : Moksliukai) {
-            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        ss1 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
+        ss1 << string(68,'-') << endl;
+        for (const auto &Past : Moksliukai) {
+            ss1 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
-        ss << "Kvailiukai:" << endl;
-        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
-        ss << string(68,'-') << endl;
-        for (auto Past : Vargsai) {
-            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        ss2 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
+        ss2 << string(68,'-') << endl;
+        for (const auto &Past : Vargsai) {
+            ss2 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
     }
-    ofstream out(failo_pav);
-    out << ss.str();
-    out.close();
+    ofstream out1("kietiakai.txt");
+    out1 << ss1.str();
+    out1.close();
+    ofstream out2("nuskriaustukai.txt");
+    out2 << ss2.str();
+    out2.close();
 }
 
 int main() {
@@ -283,6 +281,6 @@ int main() {
     }
     sort(Moksliukai.begin(), Moksliukai.end(), Rikiavimas);
     sort(Vargsai.begin(), Vargsai.end(), Rikiavimas);
-    cout << "Iveskite failo, i kuri norite isvesti rezultatus, pavadinima (be .txt): "; cin >> isvesties_pav;
-    Spausdinimas(Moksliukai, Vargsai, isvesties_pav);
+    //cout << "Iveskite failo, i kuri norite isvesti rezultatus, pavadinima (be .txt): "; cin >> isvesties_pav;
+    Spausdinimas(Moksliukai, Vargsai);//, isvesties_pav);
 }
