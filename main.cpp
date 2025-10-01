@@ -37,6 +37,7 @@ struct Studentas {
     int egz;
     double galVid;
     double galMed;
+    bool islaike;
 };
 
 double Mediana(vector <int> vekt) {
@@ -58,6 +59,11 @@ Studentas Balo_skaiciavimas(Studentas stud) {
     }
     stud.galVid = 0.4 * double(suma)/double(n) + 0.6 * stud.egz;
     stud.galMed = 0.4 * Mediana(stud.paz) + 0.6 * stud.egz;
+    if (stud.galVid >= 5) {
+        stud.islaike = true;
+    } else {
+        stud.islaike = false;
+    }
     return stud;
 }
 
@@ -158,7 +164,7 @@ string Failo_patikra(string failo_pav) {
     return failo_pav;
 }
 
-void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav) {
+void Failo_nuskaitymas(vector <Studentas> &Vargsai, vector <Studentas> &Moksliukai, string failo_pav) {
     failo_pav = Failo_patikra(failo_pav);
     cout << "Puiku! Nuskaitomas failas..." << endl;
     stringstream buferis;
@@ -181,7 +187,12 @@ void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav) {
         stud.egz = stud.paz.back();
         stud.paz.pop_back();
         stud = Balo_skaiciavimas(stud);
-        Grupe.push_back(stud);
+        if (stud.islaike) {
+                Moksliukai.push_back(stud);
+        }
+        else {
+                Vargsai.push_back(stud);
+        }
     }
 }
 
@@ -195,28 +206,49 @@ bool Rikiavimas(Studentas a, Studentas b) {
     else return false;
 }
 
-void Spausdinimas(vector <Studentas> Grupe, string failo_pav) {
+void Spausdinimas(vector <Studentas> Moksliukai, vector <Studentas> Vargsai, string failo_pav) {
     char rodinys;
     cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> rodinys;
     rodinys = Iv_raid_patikra(rodinys, "vma");
     failo_pav = failo_pav + ".txt";
     stringstream ss;
     if (rodinys == 'v') {
+        ss << "Protingieji:" << endl;
         ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
         ss << string(51,'-') << endl;
-        for (auto Past : Grupe) {
+        for (auto Past : Moksliukai) {
+            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
+        }
+        ss << "Kvailiukai:" << endl;
+        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
+        ss << string(51,'-') << endl;
+        for (auto Past : Vargsai) {
             ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
         }
     } else if (rodinys == 'm') {
+        ss << "Protingieji (islaikymas apskaiciuotas pagal vidurki):" << endl;
         ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
         ss << string(51,'-') << endl;
-        for (auto Past : Grupe) {
+        for (auto Past : Moksliukai) {
+            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        }
+        ss << "Kvailiukai:" << endl;
+        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
+        ss << string(51,'-') << endl;
+        for (auto Past : Vargsai) {
             ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
     } else if (rodinys == 'a') {
+        ss << "Protingieji (islaikymas apskaiciuotas pagal vidurki):" << endl;
         ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
         ss << string(68,'-') << endl;
-        for (auto Past : Grupe) {
+        for (auto Past : Moksliukai) {
+            ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        }
+        ss << "Kvailiukai:" << endl;
+        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
+        ss << string(68,'-') << endl;
+        for (auto Past : Vargsai) {
             ss << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
         }
     }
@@ -228,21 +260,29 @@ void Spausdinimas(vector <Studentas> Grupe, string failo_pav) {
 int main() {
     int m;
     char ar_f;
-    vector <Studentas> Grupe;
+    vector <Studentas> Vargsai, Moksliukai;
     string ivesties_pav, isvesties_pav;
     cout << "Sveiki!" << endl << "Pasirinkite, ar norite studentu duomenis irasyti patys [P], ar ikelti faila [F]? "; cin >> ar_f;
     ar_f = Iv_raid_patikra(ar_f, "pf");
     if (ar_f == 'p') {
         cout << "Kiek studentu grupeje? "; cin >> m;
         for (auto i = 0; i < m; i++) {
-            Grupe.push_back(Stud_ivestis(i));
+            Studentas laik;
+            laik = Stud_ivestis(i);
+            if (laik.islaike) {
+                Moksliukai.push_back(laik);
+            }
+            else {
+                Vargsai.push_back(laik);
+            }
         }
     }
     if (ar_f == 'f') {
         cout << "Iveskite failo pavadinima: "; cin >> ivesties_pav;
-        Failo_nuskaitymas(Grupe, ivesties_pav);
+        Failo_nuskaitymas(Vargsai, Moksliukai, ivesties_pav);
     }
-    sort(Grupe.begin(), Grupe.end(), Rikiavimas);
+    sort(Moksliukai.begin(), Moksliukai.end(), Rikiavimas);
+    sort(Vargsai.begin(), Vargsai.end(), Rikiavimas);
     cout << "Iveskite failo, i kuri norite isvesti rezultatus, pavadinima (be .txt): "; cin >> isvesties_pav;
-    Spausdinimas(Grupe, isvesties_pav);
+    Spausdinimas(Moksliukai, Vargsai, isvesties_pav);
 }
