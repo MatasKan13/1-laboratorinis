@@ -1,23 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <random>
-#include <iomanip>
-#include <sstream>
-#include <string>
-#include <typeinfo>
-
-using std::cout;
-using std::cin;
-using std::endl;
-using std::setw;
-using std::left;
-using std::to_string;
-using std::random_device;
-using std::mt19937;
-using std::uniform_int_distribution;
-using std::ostringstream;
-using std::ofstream;
-using std::string;
+#include "failu_generavimas.h"
 
 int patikra(int n) {
     while (true) {
@@ -42,7 +23,7 @@ void failo_kurimas(int nd_sk, int stud_sk) {
     }
     ss << setw(7) << left << "Egz.";
     for (int i = 1; i<=stud_sk; i++) {
-        ss << endl;
+        ss << '\n';
         ss << setw(15) << left << "Vardas" + to_string(i) << setw(16) << left << "Pavarde" + to_string(i);
         for (int j = 1; j <= nd_sk+1; j++) {
             int p = dist(gen);
@@ -59,14 +40,26 @@ int main() {
     cout << "Iveskite ND paz. skaiciu (intervale [1;99]): "; cin >> nd_sk;
     nd_sk = patikra(nd_sk);
     cout << "Generuojama..." << endl;
+    auto start = std::chrono::high_resolution_clock::now(); auto st = start;
     failo_kurimas(nd_sk, 1000);
-    cout << "1.000 studentu failas sugeneruotas!" << endl;
+    std::chrono::duration<double> diff = std::chrono::high_resolution_clock::now() - start;
+    cout << "1.000 studentu failas sugeneruotas per " << diff.count() << " s!" << endl;
+    start = std::chrono::high_resolution_clock::now();
     failo_kurimas(nd_sk, 10000);
-    cout << "10.000 studentu failas sugeneruotas!" << endl;
+    diff = std::chrono::high_resolution_clock::now() - start;
+    cout << "10.000 studentu failas sugeneruotas per " << diff.count() << " s!" << endl;
+    start = std::chrono::high_resolution_clock::now();
     failo_kurimas(nd_sk, 100000);
-    cout << "100.000 studentu failas sugeneruotas!" << endl;
+    diff = std::chrono::high_resolution_clock::now() - start;
+    cout << "100.000 studentu failas sugeneruotas per " << diff.count() << " s!" << endl;
+    start = std::chrono::high_resolution_clock::now();
     failo_kurimas(nd_sk, 1000000);
-    cout << "1.000.000 studentu failas sugeneruotas!" << endl;
+    diff = std::chrono::high_resolution_clock::now() - start;
+    cout << "1.000.000 studentu failas sugeneruotas per " << diff.count() << " s!" << endl;
+    start = std::chrono::high_resolution_clock::now();
     failo_kurimas(nd_sk, 10000000);
-    cout << "10.000.000 studentu failas sugeneruotas!" << endl;
+    diff = std::chrono::high_resolution_clock::now() - start;
+    cout << "10.000.000 studentu failas sugeneruotas per " << diff.count() << " s!" << endl;
+    diff = std::chrono::high_resolution_clock::now() - st;
+    cout << "Visas failu generavimui sugaistas laikas: " << diff.count() << " s!" << endl;
 }
