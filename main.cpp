@@ -2,9 +2,9 @@
 
 int main() {
     int m;
-    char ar_f;
+    char ar_f, rik;
     vector <Studentas> Vargsai, Moksliukai;
-    string ivesties_pav, isvesties_pav;
+    string ivesties_pav;
     cout << "Sveiki!" << endl << "Pasirinkite, ar norite studentu duomenis irasyti patys [P], ar ikelti faila [F]? "; cin >> ar_f;
     ar_f = Iv_raid_patikra(ar_f, "pf");
     if (ar_f == 'p') {
@@ -24,8 +24,10 @@ int main() {
         cout << "Iveskite failo pavadinima: "; cin >> ivesties_pav;
         Failo_nuskaitymas(Vargsai, Moksliukai, ivesties_pav);
     }
-    sort(Moksliukai.begin(), Moksliukai.end(), Rikiavimas);
-    sort(Vargsai.begin(), Vargsai.end(), Rikiavimas);
-    //cout << "Iveskite failo, i kuri norite isvesti rezultatus, pavadinima (be .txt): "; cin >> isvesties_pav;
-    Spausdinimas(Moksliukai, Vargsai);//, isvesties_pav);
+    cout << "Pasirinkite, pagal ka norite isrikiuoti duomenis:" << endl;
+    cout << "[A] pavardes\t[B] vardus\t[C] galutini bala pagal vidurki\t [D] galutini bala pagal mediana" << endl; cin >> rik;
+    rik = Iv_raid_patikra(rik, "abcd");
+    Moksliukai = Rikiavimas(Moksliukai, rik);
+    Vargsai = Rikiavimas(Vargsai, rik);
+    Spausdinimas(Moksliukai, Vargsai);
 }
