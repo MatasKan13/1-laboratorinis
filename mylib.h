@@ -7,6 +7,8 @@
 #include <random> // Skirta atsitiktinių skaičių generavimui
 #include <fstream> // Skirta darbui su failais
 #include <sstream> // Skirta stringstream (eilutės pavertimo srautu) metodui
+#include <chrono> // Skirta laiko matavimams
+#include <map>
 
 using std::cout;
 using std::cin;
@@ -29,6 +31,8 @@ using std::getline;
 using std::ws;
 using std::stringstream;
 using std::istringstream;
+using std::map;
+using std::to_string;
 
 struct Studentas {
     string vardas;
@@ -46,6 +50,8 @@ char Iv_raid_patikra(char ivestis, string raides);
 char Iv_paz_patikra(int ivestis);
 Studentas Stud_ivestis(int sk);
 string Failo_patikra(string failo_pav);
-void Failo_nuskaitymas(vector <Studentas> &Vargsai, vector <Studentas> &Moksliukai, string failo_pav);
-bool Rikiavimas(Studentas a, Studentas b);
-void Spausdinimas(vector <Studentas> Moksliukai, vector <Studentas> Vargsai);
+void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav);
+void Paskirstymas(vector <Studentas> &Grupe, vector <Studentas> &Moksliukai, vector <Studentas> &Vargsai);
+char Rikiavimo_tipas();
+void Spausdinimas(vector <Studentas> , char rodinys);
+vector <Studentas> Rikiavimas(vector <Studentas> , char rik);
