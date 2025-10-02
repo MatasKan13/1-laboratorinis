@@ -124,7 +124,7 @@ string Failo_patikra(string failo_pav) {
     return failo_pav;
 }
 
-void Failo_nuskaitymas(vector <Studentas> &Vargsai, vector <Studentas> &Moksliukai, string failo_pav) {
+void Failo_nuskaitymas(vector <Studentas> &Grupe, string failo_pav) {
     failo_pav = Failo_patikra(failo_pav);
     cout << "Puiku! Nuskaitomas failas..." << endl;
     stringstream buferis;
@@ -146,14 +146,21 @@ void Failo_nuskaitymas(vector <Studentas> &Vargsai, vector <Studentas> &Moksliuk
         }
         stud.egz = stud.paz.back();
         stud.paz.pop_back();
+        Grupe.push_back(stud);
+    }
+}
+
+void Paskirstymas(vector <Studentas> &Grupe, vector <Studentas> &Moksliukai, vector <Studentas> &Vargsai) {
+    for (auto stud : Grupe) {
         stud = Balo_skaiciavimas(stud);
         if (stud.islaike) {
-                Moksliukai.push_back(stud);
+            Moksliukai.push_back(stud);
         }
         else {
-                Vargsai.push_back(stud);
+            Vargsai.push_back(stud);
         }
     }
+    Grupe.clear();
 }
 
 vector <Studentas> Rikiavimas(vector <Studentas> Rikiuojamas, char rik) {
@@ -171,51 +178,42 @@ vector <Studentas> Rikiavimas(vector <Studentas> Rikiuojamas, char rik) {
     return Rikiuojamas;
 }
 
-void Spausdinimas(vector <Studentas> Moksliukai, vector <Studentas> Vargsai) {//, string failo_pav) {
-    char rodinys;
-    cout << "Kaip skaiciuoti galutini ivertinima? Pasirinkite: su vidurkiu [V], su mediana [M] ar abu [A]? "; cin >> rodinys;
-    rodinys = Iv_raid_patikra(rodinys, "vma");
-    //failo_pav = failo_pav + ".txt";
-    stringstream ss1;
-    stringstream ss2;
+char Rikiavimo_tipas() {
+    char rik;
+    cout << "Pasirinkite, pagal ka norite isrikiuoti duomenis:" << endl;
+    cout << "[A] pavardes\t[B] vardus\t[C] galutini bala pagal vidurki\t [D] galutini bala pagal mediana" << endl; cin >> rik;
+    rik = Iv_raid_patikra(rik, "abcd");
+    return rik;
+}
+
+void Spausdinimas(vector <Studentas> Spausd_gr, char rodinys) {
+    stringstream ss;
     if (rodinys == 'v') {
-        ss1 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
-        ss1 << string(51,'-') << endl;
-        for (const auto &Past : Moksliukai) {
-            ss1 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
-        }
-        ss2 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
-        ss2 << string(51,'-') << endl;
-        for (const auto &Past : Vargsai) {
-            ss2 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid << endl;
+        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
+        ss << string(51,'-');
+        for (const auto &Past : Spausd_gr) {
+            ss << endl << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid;
         }
     } else if (rodinys == 'm') {
-        ss1 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
-        ss1 << string(51,'-') << endl;
-        for (const auto &Past : Moksliukai) {
-            ss1 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
-        }
-        ss2 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
-        ss2 << string(51,'-') << endl;
-        for (const auto &Past : Vargsai) {
-            ss2 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
+        ss << string(51,'-');
+        for (const auto &Past : Spausd_gr) {
+            ss << endl << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed;
         }
     } else if (rodinys == 'a') {
-        ss1 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
-        ss1 << string(68,'-') << endl;
-        for (const auto &Past : Moksliukai) {
-            ss1 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
-        }
-        ss2 << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
-        ss2 << string(68,'-') << endl;
-        for (const auto &Past : Vargsai) {
-            ss2 << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed << endl;
+        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
+        ss << string(68,'-');
+        for (const auto &Past : Spausd_gr) {
+            ss << endl << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed;
         }
     }
-    ofstream out1("kietiakai.txt");
-    out1 << ss1.str();
-    out1.close();
-    ofstream out2("nuskriaustukai.txt");
-    out2 << ss2.str();
-    out2.close();
+    if (Spausd_gr[0].islaike) {
+        ofstream out("kietiakai.txt");
+        out << ss.str();
+        out.close();
+    } else {
+        ofstream out("nuskriaustukai.txt");
+        out << ss.str();
+        out.close();
+    }
 }
