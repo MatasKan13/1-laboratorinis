@@ -65,3 +65,33 @@ char Rikiavimo_tipas() {
     rik = Iv_raid_patikra(rik, "abcd");
     return rik;
 }
+
+vector <Studentas> Rikiavimas_vector(vector <Studentas> Rikiuojamas, char rik) {
+    sort(Rikiuojamas.begin(), Rikiuojamas.end(), [rik](const Studentas &a, const Studentas &b) {
+        if (rik == 'a') {
+            return a.pavarde < b.pavarde;
+        } else if (rik == 'b') {
+            return a.vardas < b.vardas;
+        } else if (rik == 'c') {
+            return a.galVid > b.galVid;
+        } else {
+            return a.galMed > b.galMed;
+        }
+    });
+    return Rikiuojamas;
+}
+
+list <Studentas> Rikiavimas_list(list <Studentas> Rikiuojamas, char rik) {
+    Rikiuojamas.sort([rik](const Studentas &a, const Studentas &b){
+        if (rik == 'a') {
+            return a.pavarde < b.pavarde;
+        } else if (rik == 'b') {
+            return a.vardas < b.vardas;
+        } else if (rik == 'c') {
+            return a.galVid > b.galVid;
+        } else {
+            return a.galMed > b.galMed;
+        }
+    });
+    return Rikiuojamas;
+}
