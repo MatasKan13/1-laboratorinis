@@ -16,3 +16,53 @@
 3. Funkcijos ir struktūros perkeltos į atskirus failus;
 4. Pridėta galimybė vartotojui pasirinkti parametrą, pagal kurį rikiuoti rezultatus;
 5. Sukurta programos spartos analizė.
+
+**V0.3** <br>
+1. Pridėta galimybė įrašius duomenis ranka pamatyti objekto adresą atmintyje;
+2. Pridėta galimybė duomenis talpinti ir std::list struktūroje;
+3. Atlikta programos spartos analizė taikant std::vector ir std::list konteinerius: <br>
+Matuoti trys programos atlikimo etapai – visų studentų surūšiavimas į išlaikiusius ir neišlaikiusius, duomenų išrikiavimas pagal galutinį pažymį, rezultatų įrašymas į failus. Visi bandymai atlikti su failais, turinčiais 5 ND pažymius bei rikiavimas vykdomas pagal vidurkio reikšmes. Kiekvienas testas atliktas 5 kartus.
+Rezultatai:
+<table>
+  <caption><b>Surūšiavimas į dvi grupes</b></caption>
+  <thead>
+    <tr>
+      <th>Įrašų skaičius</th>
+      <th>Vector</th>
+      <th>List</th>
+      <th>Ar skirtumas bent 10%?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1.000</td>
+      <td>0,0014</td>
+      <td>0,0014</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>10.000</td>
+      <td>0,0073</td>
+      <td>0,0068</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>100.000</td>
+      <td>0,0471</td>
+      <td>0,071</td>
+      <td>+</td>
+    </tr>
+    <tr>
+      <td>1.000.000</td>
+      <td>0,4304</td>
+      <td>0,4971</td>
+      <td>+</td>
+    </tr>
+    <tr>
+      <td>10.000.000</td>
+      <td>4,1767</td>
+      <td>5,372</td>
+      <td>+</td>
+    </tr>
+  </tbody>
+</table>
