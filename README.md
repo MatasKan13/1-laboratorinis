@@ -22,7 +22,7 @@
 2. Pridėta galimybė duomenis talpinti ir std::list struktūroje;
 3. Atlikta programos spartos analizė taikant std::vector ir std::list konteinerius. <br>
 
-Analizės apžvalga: matuoti trys programos atlikimo etapai – visų studentų surūšiavimas į išlaikiusius ir neišlaikiusius, duomenų išrikiavimas pagal galutinį pažymį, rezultatų įrašymas į failus. Visi bandymai atlikti su failais, turinčiais 5 ND pažymius bei rikiavimas vykdomas pagal vidurkio reikšmes. Visi testai atlikti 5 kartus, jų vidurkius galite matyti lentelėse.
+Analizės apžvalga: matuoti trys programos atlikimo etapai – visų studentų surūšiavimas į išlaikiusius ir neišlaikiusius, duomenų išrikiavimas pagal galutinį pažymį, rezultatų įrašymas į failus. Visi bandymai atlikti su failais, turinčiais 5 ND pažymius bei rikiavimas vykdomas pagal vidurkio reikšmes. Visi testai atlikti 5 kartus, jų vidurkius galite matyti lentelėse (duomenys pateikti sekundėmis).
 
 Rezultatai:
 <table>
