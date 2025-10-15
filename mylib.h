@@ -35,6 +35,8 @@ using std::istringstream;
 using std::map;
 using std::to_string;
 using std::list;
+using std::stoi;
+using std::pair;
 
 struct Studentas {
     string vardas;
@@ -49,8 +51,13 @@ struct Studentas {
 double Mediana(vector <int> vekt);
 Studentas Balo_skaiciavimas(Studentas stud);
 char Iv_raid_patikra(char ivestis, string raides);
+int Iv_paz_patikra(string ivestis, bool);
+pair <string, int> Failo_pasirinkimas();
+Studentas Stud_ivestis(int sk);
 string Failo_patikra(string failo_pav);
 char Rikiavimo_tipas();
+vector <Studentas> Rikiavimas_vector(vector <Studentas> Rikiuojamas, char rik);
+list <Studentas> Rikiavimas_list(list <Studentas> Rikiuojamas, char rik);
 
 template <typename T>
 void Failo_nuskaitymas(T &Grupe, string failo_pav) {
@@ -94,63 +101,67 @@ void Paskirstymas(T &Grupe, T &Moksliukai, T &Vargsai) {
 }
 
 template <typename T>
-void Spausdinimas(T Spausd_gr, char rodinys) {
+void Spausdinimas(T Spausd_gr) {
     stringstream ss;
-    if (rodinys == 'v') {
-        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Vid.)" << endl;
-        ss << string(51,'-');
-        for (const auto &Past : Spausd_gr) {
-            ss << endl << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galVid;
-        }
-    } else if (rodinys == 'm') {
-        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(16) << left << "Galutinis (Med.)" << endl;
-        ss << string(51,'-');
-        for (const auto &Past : Spausd_gr) {
-            ss << endl << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(16) << left << fixed << setprecision(2) << Past.galMed;
-        }
-    } else if (rodinys == 'a') {
-        ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
-        ss << string(68,'-');
-        for (const auto &Past : Spausd_gr) {
-            ss << endl << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed;
-        }
+    ss << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(16) << left << "Galutinis (Med.)" << endl;
+    ss << string(68,'-');
+    for (const auto &Past : Spausd_gr) {
+        ss << endl << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(16) << left << fixed << setprecision(2) << Past.galMed;
     }
-    try {
-        if (Spausd_gr[0].islaike) {
-            ofstream out("kietiakai.txt");
-            out << ss.str();
-            out.close();
-        } else {
-            ofstream out("nuskriaustukai.txt");
-            out << ss.str();
-            out.close();
-        }
-    }
-    catch(...) {
-        if (Spausd_gr.front().islaike) {
-            ofstream out("kietiakai.txt");
-            out << ss.str();
-            out.close();
-        } else {
-            ofstream out("nuskriaustukai.txt");
-            out << ss.str();
-            out.close();
-        }
+    
+    auto it = Spausd_gr.begin();
+    if (it->islaike) {
+        ofstream out("kietiakai.txt");
+        out << ss.str();
+        out.close();
+    } else {
+        ofstream out("nuskriaustukai.txt");
+        out << ss.str();
+        out.close();
     }
 }
 
 template <typename T>
-T Rikiavimas(T Rikiuojamas, char rik) {
-    sort(Rikiuojamas.begin(), Rikiuojamas.end(), [rik](const Studentas &a, const Studentas &b) {
-        if (rik == 'a') {
-            return a.pavarde < b.pavarde;
-        } else if (rik == 'b') {
-            return a.vardas < b.vardas;
-        } else if (rik == 'c') {
-            return a.galVid > b.galVid;
-        } else {
-            return a.galMed > b.galMed;
+void Ekrano_isvestis(T Vargsai, T Moksliukai) {
+    if(Moksliukai.size()!=0) {
+        cout << "Islaike studentai:" << endl;
+        cout << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(17) << left << "Galutinis (Med.)" << setw(17) << left << "Adresas atmintyje" << endl;
+        cout << string(86,'-');
+        for (const auto &Past : Moksliukai) {
+            cout << endl << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(17) << left << fixed << setprecision(2) << Past.galMed << setw(17) << left << &Past;
         }
-    });
-    return Rikiuojamas;
+    }
+    else {
+        cout << "Islaikiusiu studentu nera! :(";
+    }
+    cout << endl << endl;
+    if(Vargsai.size()!=0) {
+        cout << "Neislaike studentai:" << endl;
+        cout << setw(15) << left << "Vardas" << setw(20) << left << "Pavarde" << setw(17) << left << "Galutinis (Vid.) " << setw(17) << left << "Galutinis (Med.)" << setw(17) << left << "Adresas atmintyje" << endl;
+        cout << string(86,'-');
+        for (const auto &Past : Vargsai) {
+            cout << endl << setw(15) << left << Past.vardas << setw(20) << left << Past.pavarde << setw(17) << left << fixed << setprecision(2) << Past.galVid << setw(17) << left << fixed << setprecision(2) << Past.galMed << setw(17) << left << &Past;
+        }
+    }
+    else {
+        cout << "Neislaikiusiu studentu nera! :)";
+    }
+    cout << endl;
+}
+
+template <typename T>
+void Ivestis_ranka(T &Vargsai, T &Moksliukai) {
+    int m;
+    char rik;
+    cout << "Kiek studentu grupeje? "; cin >> m;
+    for (auto i = 0; i < m; i++) {
+        Studentas laik;
+        laik = Stud_ivestis(i);
+        if (laik.islaike) {
+            Moksliukai.push_back(laik);
+        }
+        else {
+            Vargsai.push_back(laik);
+        }
+    }
 }
