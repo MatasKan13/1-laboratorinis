@@ -44,6 +44,79 @@ char Iv_raid_patikra(char ivestis, string raides) {
     return(ivestis);
 }
 
+int Iv_paz_patikra(string ivestis) {
+    bool tesiam = true;
+    int paz;
+    while (tesiam) {
+        try {
+            paz = stoi(ivestis); 
+            for (int sk = 1; sk <=10; sk++) {
+                if (paz == sk) {
+                    tesiam = false;
+                    break;
+                }
+            }
+            if (tesiam) {
+                cout << "Neteisinga ivestis! Bandykite dar karta: "; cin >> ivestis;
+            }
+        }
+        catch(...) {
+            cout << "Neteisinga ivestis! Bandykite dar karta: "; cin >> ivestis;
+        }
+    }
+    return(paz);
+}
+
+Studentas Stud_ivestis(int sk){
+    Studentas stud;
+    int laik_paz, n = 1;
+    char testi, atsit;
+    cout << "Kuo vardu " << sk+1 << "-asis studentas(-e)? "; cin >> stud.vardas;
+    cout << "Kokia jo (jos) pavarde? "; cin >> stud.pavarde;
+    cout << "Ar noretumete sio studento pazymius sugeneruoti atsitiktinai? [T/N] "; cin >> atsit;
+    atsit = Iv_raid_patikra(atsit, "tn");
+    if (atsit == 't') {
+        random_device rd;
+        mt19937 gen(rd());
+        uniform_int_distribution dist(1,10);
+        while (true) {
+            cout << "Generuojama..." << endl;
+            int p = dist(gen);
+            cout << "Sugeneruotas pazymys: " << p << endl;
+            stud.paz.push_back(p);
+            cout << "Ar norite toliau rasyti pazymius? [T/N] "; cin >> testi;
+            testi = Iv_raid_patikra(testi, "tn");
+            if (testi == 'n'){
+                break;
+            }
+        }
+        cout << "Generuojama..." << endl;
+        stud.egz = dist(gen);
+        cout << "Sugeneruotas egzamino ivertinimas: " << stud.egz << endl;
+    }
+    else {
+        string egz_iv, paz_iv;
+        cout << "Iveskite pazymius." << endl;
+        while (true) {
+            cout << n << "-asis pazymys: "; cin >> paz_iv;
+            laik_paz = Iv_paz_patikra(paz_iv);
+            stud.paz.push_back(laik_paz);
+            cout << "Ar norite toliau rasyti pazymius? [T/N] "; cin >> testi;
+            testi = Iv_raid_patikra(testi, "tn");
+            if (testi == 't') {
+                n++;
+            }
+            else if (testi == 'n'){
+                break;
+            }
+        }
+        cout << "Koks egzamino ivertinimas? "; cin >> egz_iv;
+        stud.egz = Iv_paz_patikra(egz_iv);
+    }
+    stud = Balo_skaiciavimas(stud);
+    return(stud);
+}
+
 string Failo_patikra(string failo_pav) {
     while (true) {
         ifstream in(failo_pav);
