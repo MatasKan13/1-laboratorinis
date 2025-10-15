@@ -44,13 +44,16 @@ char Iv_raid_patikra(char ivestis, string raides) {
     return(ivestis);
 }
 
-int Iv_paz_patikra(string ivestis) {
+int Iv_paz_patikra(string ivestis, bool egzas) {
     bool tesiam = true;
     int paz;
     while (tesiam) {
         try {
             paz = stoi(ivestis); 
-            for (int sk = 1; sk <=10; sk++) {
+            for (int sk = 0; sk <=10; sk++) {
+                if (egzas && sk == 0) {
+                    continue;
+                }
                 if (paz == sk) {
                     tesiam = false;
                     break;
@@ -96,22 +99,24 @@ Studentas Stud_ivestis(int sk){
     }
     else {
         string egz_iv, paz_iv;
-        cout << "Iveskite pazymius." << endl;
+        cout << "Iveskite pazymius (baige iveskite 0)." << endl;
         while (true) {
             cout << n << "-asis pazymys: "; cin >> paz_iv;
-            laik_paz = Iv_paz_patikra(paz_iv);
-            stud.paz.push_back(laik_paz);
-            cout << "Ar norite toliau rasyti pazymius? [T/N] "; cin >> testi;
-            testi = Iv_raid_patikra(testi, "tn");
-            if (testi == 't') {
-                n++;
+            laik_paz = Iv_paz_patikra(paz_iv, 0);
+            if (laik_paz == 0) {
+                if (stud.paz.size() != 0) {
+                    break;
+                } else {
+                    cout << "Prasome ivesti pazymiu!\n";
+                }
             }
-            else if (testi == 'n'){
-                break;
+            else {
+                stud.paz.push_back(laik_paz);
+                n++;
             }
         }
         cout << "Koks egzamino ivertinimas? "; cin >> egz_iv;
-        stud.egz = Iv_paz_patikra(egz_iv);
+        stud.egz = Iv_paz_patikra(egz_iv, 1);
     }
     stud = Balo_skaiciavimas(stud);
     return(stud);
@@ -137,6 +142,19 @@ char Rikiavimo_tipas() {
     cout << "[A] pavardes\t[B] vardus\t[C] galutini bala pagal vidurki\t [D] galutini bala pagal mediana" << endl; cin >> rik;
     rik = Iv_raid_patikra(rik, "abcd");
     return rik;
+}
+
+pair <string, int> Failo_pasirinkimas() {
+    string ivesties_pav;
+    char f_tip, rik;
+    cout << "Pasirinkite, kokio studentu skaiciaus faila tikrinsite:\n[A] 1.000\t[B] 10.000\t[C] 100.000\t[D] 1.000.000\t[E] 10.000.000\n";
+    cin >> f_tip;
+    f_tip = Iv_raid_patikra(f_tip, "abcde");
+    rik = Rikiavimo_tipas();
+    map <char, int> tipai = {{'a', 1000}, {'b', 10000}, {'c', 100000}, {'d', 1000000}, {'e', 10000000}};
+    int irasu_sk = tipai[f_tip];
+    ivesties_pav = "stud" + to_string(irasu_sk) + ".txt";
+    return {ivesties_pav, irasu_sk};
 }
 
 vector <Studentas> Rikiavimas_vector(vector <Studentas> Rikiuojamas, char rik) {
