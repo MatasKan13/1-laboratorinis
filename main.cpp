@@ -2,8 +2,7 @@
 #include "timer.h"
 
 int main() {
-    int m;
-    char kont, rik, sp, ar_f;
+    char kont, rik, ar_f;
     string ivesties_pav;
     cout << "Sveiki!" << endl << "Pasirinkite, ar norite studentu duomenis laikyti vektoriuje [V], ar sarase [S]? "; cin >> kont;
     kont = Iv_raid_patikra(kont, "vs");
@@ -12,31 +11,16 @@ int main() {
     if (kont == 'v') {
         vector <Studentas> Grupe, Vargsai, Moksliukai;
         if (ar_f == 'p') {
-            cout << "Kiek studentu grupeje? "; cin >> m;
-            for (auto i = 0; i < m; i++) {
-                Studentas laik;
-                laik = Stud_ivestis(i);
-                if (laik.islaike) {
-                    Moksliukai.push_back(laik);
-                }
-                else {
-                    Vargsai.push_back(laik);
-                }
-            }
+            Ivestis_ranka(Vargsai, Moksliukai);
             rik = Rikiavimo_tipas();
             Moksliukai = Rikiavimas_vector(Moksliukai, rik);
             Vargsai = Rikiavimas_vector(Vargsai, rik);
             Ekrano_isvestis(Vargsai, Moksliukai);
         }
         else {
-            char f_tip;
-            cout << "Pasirinkite, kokio studentu skaiciaus faila tikrinsite:\n[A] 1.000\t[B] 10.000\t[C] 100.000\t[D] 1.000.000\t[E] 10.000.000\n";
-            cin >> f_tip;
-            f_tip = Iv_raid_patikra(f_tip, "abcde");
-            rik = Rikiavimo_tipas();
-            map <char, int> tipai = {{'a', 1000}, {'b', 10000}, {'c', 100000}, {'d', 1000000}, {'e', 10000000}};
-            int irasu_sk = tipai[f_tip];
-            ivesties_pav = "stud" + to_string(irasu_sk) + ".txt";
+            pair <string, int> duom = Failo_pasirinkimas();
+            ivesties_pav = duom.first;
+            int irasu_sk = duom.second;
 
             Timer t, visas;
             Failo_nuskaitymas(Grupe, ivesties_pav);
@@ -65,31 +49,16 @@ int main() {
     else {
         list <Studentas> Grupe, Vargsai, Moksliukai;
         if (ar_f == 'p') {
-            cout << "Kiek studentu grupeje? "; cin >> m;
-            for (auto i = 0; i < m; i++) {
-                Studentas laik;
-                laik = Stud_ivestis(i);
-                if (laik.islaike) {
-                    Moksliukai.push_back(laik);
-                }
-                else {
-                    Vargsai.push_back(laik);
-                }
-            }
+            Ivestis_ranka(Vargsai, Moksliukai);
             rik = Rikiavimo_tipas();
             Moksliukai = Rikiavimas_list(Moksliukai, rik);
             Vargsai = Rikiavimas_list(Vargsai, rik);
             Ekrano_isvestis(Vargsai, Moksliukai);
         }
         else {
-            char f_tip;
-            cout << "Pasirinkite, kokio studentu skaiciaus faila tikrinsite:\n[A] 1.000\t[B] 10.000\t[C] 100.000\t[D] 1.000.000\t[E] 10.000.000\n";
-            cin >> f_tip;
-            f_tip = Iv_raid_patikra(f_tip, "abcde");
-            rik = Rikiavimo_tipas();
-            map <char, int> tipai = {{'a', 1000}, {'b', 10000}, {'c', 100000}, {'d', 1000000}, {'e', 10000000}};
-            int irasu_sk = tipai[f_tip];
-            ivesties_pav = "stud" + to_string(irasu_sk) + ".txt";
+            pair <string, int> duom = Failo_pasirinkimas();
+            ivesties_pav = duom.first;
+            int irasu_sk = duom.second;
 
             Timer t, visas;
             Failo_nuskaitymas(Grupe, ivesties_pav);
